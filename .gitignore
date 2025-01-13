@@ -1,0 +1,15 @@
+.vs
+[Oo]utput
+[Ii]ntermediate
+x64/
+x86/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ee]nc_temp_folder
+*.bat
+*.lnk
+*.ini
+*.vta2
+DvlErrLog.txt
