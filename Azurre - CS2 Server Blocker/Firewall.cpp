@@ -16,11 +16,11 @@ std::wstring string2WString(const std::string& str) {
 }
 
 std::string BSTR2STR(BSTR bstr) {
-    _bstr_t wrapped_bstr = _bstr_t(bstr);
-    int length = wrapped_bstr.length();
-    char* char_array = new char[length];
-    strcpy_s(char_array, length + 1, wrapped_bstr);
-    return char_array;
+    if (!bstr)
+        return "";
+
+    _bstr_t wrapped_bstr(bstr);
+    return std::string(wrapped_bstr);
 }
 
 bool Firewall::unblockRelay(Relay& relay) {

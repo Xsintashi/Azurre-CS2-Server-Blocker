@@ -12,8 +12,19 @@
 
 #define THREAD_LOOP					isRunning
 
+#define __MONTH__ (\
+    __DATE__[2] == 'n' ? (__DATE__[1] == 'a' ? "01" : "06") \
+    : __DATE__[2] == 'b' ? "02" \
+    : __DATE__[2] == 'r' ? (__DATE__[0] == 'M' ? "03" : "04") \
+    : __DATE__[2] == 'y' ? "05" \
+    : __DATE__[2] == 'l' ? "07" \
+    : __DATE__[2] == 'g' ? "08" \
+    : __DATE__[2] == 'p' ? "09" \
+    : __DATE__[2] == 't' ? "10" \
+    : __DATE__[2] == 'v' ? "11" \
+    : "12")
+
 #define THREAD_SLEEP(time)			std::this_thread::sleep_for(std::chrono::milliseconds(time))
-#define TICK_COUNT_TIME				static_cast<float>(GetTickCount64() / 1000.f)
 
 namespace Core {
     void init() noexcept;
@@ -21,6 +32,14 @@ namespace Core {
     void sortCity(std::vector<Relay>& relays);
     bool updateSDRConfig() noexcept;
 
+    constexpr std::string getVersion() noexcept {
+        const std::string date = __DATE__;
+        std::string v = date.substr(9, 10);
+        v += __MONTH__;
+        v += static_cast<char>(date[4]) != ' ' ? date[4] : '0';
+        v += date[5];
+        return v;
+    }
 };
 
 inline std::vector<Relay> relays;

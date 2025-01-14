@@ -312,35 +312,35 @@ void GUI::render() noexcept {
             ImGui::SetNextWindowPos({ 0, 0 });
             ImGui::SetNextWindowSize(screenSize);
             ImGui::Begin("Azurre - CS2 Server Blocker", &isRunning, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoShadows);
-            if (ImGui::Button("Sort by alphabetically"))
+            if (ImGui::Button("Sort alphabetically"))
                 Core::sortAlfa(relays);
             ImGui::SameLine();
             if (ImGui::Button("Sort by Country"))
                 Core::sortCity(relays);
             ImGui::SameLine();
-            ImGui::SetCursorPosX(screenSize.x - 64.f);
-            if (ImGui::Button("Refresh")) {
+            ImGui::SetCursorPosX(screenSize.x - 66.f);
+            if (ImGui::Button("Refresh"))
                 Core::init();
-            }
             ImGui::SeparatorText("Servers");
             ImGui::BeginChild("##servers", { -1, -12 }, false, 0);
             if (relays.empty()) 
-                ImGui::Text("No Data :(!");
+                ImGui::Text("No Server found :(!");
             else {
                 for (auto& relay : relays) {
                     ImGui::PushID(relay.code.c_str());
                     ImGui::PushStyleColor(ImGuiCol_Text, relay.blocked ? ImVec4{1.f, 0.f, 0.f, 1.f} : ImVec4{ 0.f, 1.f, 0.f, 1.f });
                     if (ImGui::Button(relay.name.c_str(), { -1, 32 }))
-                        if (!relay.blocked)
-                            relay.blocked = !Firewall::blockRelay(relay);
-                        else
-                            relay.blocked = Firewall::unblockRelay(relay);
+                        relay.blocked = relay.blocked ? Firewall::unblockRelay(relay) : !Firewall::blockRelay(relay);
+
                     ImGui::PopStyleColor();
                     ImGui::PopID();
                 }
             }
             ImGui::EndChild();
             ImGui::Text("Found %d servers.", relays.size());
+            ImGui::SameLine();
+            ImGui::SetCursorPosX(screenSize.x - 59.f);
+            ImGui::Text("v%s", Core::getVersion().c_str());
             ImGui::End();
         }
         // Rendering
@@ -359,7 +359,7 @@ void GUI::render() noexcept {
 
         g_pSwapChain->Present(1, 0); // Present with vsync
         //g_pSwapChain->Present(0, 0); // Present without vsync
-        THREAD_SLEEP(GetActiveWindow() == azurre2 ? 1 : 100);
+        THREAD_SLEEP(GetActiveWindow() == azurre2 ? 1 : 250);
     }
 }
 
