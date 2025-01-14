@@ -1,9 +1,9 @@
 #define IMGUI_DEFINE_MATH_OPERATORS
-#include "Lib/ImGui/imgui.h"
-#include "Lib/ImGui/imgui_impl_dx11.h"
-#include "Lib/ImGui/imgui_impl_win32.h"
-#include "Lib/imgui/imgui_stdlib.h"
-#include "Lib/ImGui/ImGuiCustom.h"
+#include "../Lib/ImGui/imgui.h"
+#include "../Lib/ImGui/imgui_impl_dx11.h"
+#include "../Lib/ImGui/imgui_impl_win32.h"
+#include "../Lib/imgui/imgui_stdlib.h"
+#include "../Lib/ImGui/ImGuiCustom.h"
 #include "resource.h"
 #include <bitset>
 #include <d3d11.h>

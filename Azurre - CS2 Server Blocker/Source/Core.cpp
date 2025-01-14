@@ -1,7 +1,7 @@
 #include "Core.h"
 #include "Firewall.h"
 #include "resource.h"
-#include "Lib/nlohmann/json.hpp"
+#include "../Lib/nlohmann/json.hpp"
 #include <ShlObj.h>
 
 using json = nlohmann::json;
@@ -10,7 +10,6 @@ json sdr{};
 void setIcon(unsigned long ID) noexcept {
     SendMessage(azurre2, WM_SETICON, ICON_BIG, (LPARAM)LoadIcon(hInstance, MAKEINTRESOURCE(ID)));
     SendMessage(azurre2, WM_SETICON, ICON_SMALL, (LPARAM)LoadIcon(hInstance, MAKEINTRESOURCE(ID)));
-
 }
 
 void setTaskbarProgressColor(int progressValue, int progressMax, TBPFLAG progressState) {
