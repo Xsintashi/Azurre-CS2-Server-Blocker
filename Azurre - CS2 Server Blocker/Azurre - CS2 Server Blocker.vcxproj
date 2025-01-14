@@ -122,7 +122,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalOptions>/STUB:stub.exe %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>d3d11.lib;d3dcompiler.lib;dxgi.lib;uxtheme.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;d3dcompiler.lib;dxgi.lib;uxtheme.lib;ole32.lib;oleaut32.lib;Urlmon.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -141,12 +141,13 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalOptions>/STUB:stub.exe %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>d3d11.lib;d3dcompiler.lib;dxgi.lib;uxtheme.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;d3dcompiler.lib;dxgi.lib;uxtheme.lib;ole32.lib;oleaut32.lib;Urlmon.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Azurre.cpp" />
     <ClCompile Include="Core.cpp" />
+    <ClCompile Include="Firewall.cpp" />
     <ClCompile Include="GUI.cpp" />
     <ClCompile Include="lib\ImGui\imgui.cxx" />
     <ClCompile Include="lib\ImGui\ImGuiCustom.cxx" />
@@ -165,6 +166,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core.h" />
+    <ClInclude Include="Firewall.h" />
     <ClInclude Include="GUI.h" />
     <ClInclude Include="lib\ImGui\imconfig.h" />
     <ClInclude Include="lib\ImGui\imgui.h" />
@@ -177,9 +179,12 @@
     <ClInclude Include="lib\ImGui\imstb_rectpack.h" />
     <ClInclude Include="lib\ImGui\imstb_textedit.h" />
     <ClInclude Include="lib\ImGui\imstb_truetype.h" />
+    <ClInclude Include="lib\nlohmann\json.hpp" />
+    <ClInclude Include="lib\nlohmann\JsonForward.h" />
     <ClInclude Include="Lock.h" />
     <ClInclude Include="Memory.h" />
     <ClInclude Include="Mutex.h" />
+    <ClInclude Include="Relay.h" />
     <ClInclude Include="xor.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -11,10 +11,12 @@
 #include <iostream>
 #include <ShlObj.h>
 #include <string>
+#include <iostream>
 
 #include "GUI.h"
 #include "Core.h"
 #include "Lock.h"
+#include "Firewall.h"
 
 #pragma execution_character_set("utf-8")
 // Data
@@ -247,7 +249,6 @@ void GUI::render() noexcept {
     applyBlur(azurre2, true);
     static DWORD sleepTime = 1;
     ImGuiIO& io = ImGui::GetIO(); (void)io;
-
     while (THREAD_LOOP) {
         // Poll and handle messages (inputs, window resize, etc.)
         // See the WndProc() function below for our to dispatch events to the Win32 backend.
@@ -309,9 +310,37 @@ void GUI::render() noexcept {
         ImGui::NewFrame();
         {
             ImGui::SetNextWindowPos({ 0, 0 });
-            ImGui::SetNextWindowSize(screenSize); // 240 x 320
+            ImGui::SetNextWindowSize(screenSize);
             ImGui::Begin("Azurre - CS2 Server Blocker", &isRunning, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoShadows);
-            ImGui::Text("Hello xs9 :)");
+            if (ImGui::Button("Sort by alphabetically"))
+                Core::sortAlfa(relays);
+            ImGui::SameLine();
+            if (ImGui::Button("Sort by Country"))
+                Core::sortCity(relays);
+            ImGui::SameLine();
+            ImGui::SetCursorPosX(screenSize.x - 64.f);
+            if (ImGui::Button("Refresh")) {
+                Core::init();
+            }
+            ImGui::SeparatorText("Servers");
+            ImGui::BeginChild("##servers", { -1, -12 }, false, 0);
+            if (relays.empty()) 
+                ImGui::Text("No Data :(!");
+            else {
+                for (auto& relay : relays) {
+                    ImGui::PushID(relay.code.c_str());
+                    ImGui::PushStyleColor(ImGuiCol_Text, relay.blocked ? ImVec4{1.f, 0.f, 0.f, 1.f} : ImVec4{ 0.f, 1.f, 0.f, 1.f });
+                    if (ImGui::Button(relay.name.c_str(), { -1, 32 }))
+                        if (!relay.blocked)
+                            relay.blocked = !Firewall::blockRelay(relay);
+                        else
+                            relay.blocked = Firewall::unblockRelay(relay);
+                    ImGui::PopStyleColor();
+                    ImGui::PopID();
+                }
+            }
+            ImGui::EndChild();
+            ImGui::Text("Found %d servers.", relays.size());
             ImGui::End();
         }
         // Rendering
@@ -347,8 +376,6 @@ void GUI::destroy() noexcept {
 
 void GUI::init() noexcept {
     THREAD_LOOP = true;
-    ImGuiIO io;
-    screenSize = { 240.f, 320.f };
     GUI::create();
     GUI::render();
     GUI::destroy();
