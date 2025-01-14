@@ -146,6 +146,9 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>d3d11.lib;d3dcompiler.lib;dxgi.lib;uxtheme.lib;ole32.lib;oleaut32.lib;Urlmon.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <ResourceCompile>
+      <ResourceOutputFileName>$(IntDir)%(Filename).res</ResourceOutputFileName>
+    </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Azurre.cpp" />
@@ -162,10 +165,6 @@
     <ClCompile Include="lib\ImGui\imgui_tables.cxx" />
     <ClCompile Include="lib\ImGui\imgui_widgets.cxx" />
     <ClCompile Include="Mutex.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="stub.asm" />
-    <None Include="stub.exe" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core.h" />
@@ -188,7 +187,19 @@
     <ClInclude Include="Memory.h" />
     <ClInclude Include="Mutex.h" />
     <ClInclude Include="Relay.h" />
-    <ClInclude Include="xor.h" />
+    <ClInclude Include="resource.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="azurre.ico" />
+    <Image Include="green.ico" />
+    <Image Include="icon.ico" />
+    <Image Include="icon1.ico" />
+    <Image Include="icon2.ico" />
+    <Image Include="red.ico" />
+    <Image Include="yellow.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Azurre - CS2 Server Blocker.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

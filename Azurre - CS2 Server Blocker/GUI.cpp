@@ -4,6 +4,7 @@
 #include "Lib/ImGui/imgui_impl_win32.h"
 #include "Lib/imgui/imgui_stdlib.h"
 #include "Lib/ImGui/ImGuiCustom.h"
+#include "resource.h"
 #include <bitset>
 #include <d3d11.h>
 #include <dwmapi.h>
@@ -11,7 +12,6 @@
 #include <iostream>
 #include <ShlObj.h>
 #include <string>
-#include <iostream>
 
 #include "GUI.h"
 #include "Core.h"
@@ -78,7 +78,7 @@ void GUI::applyBlur(HWND hwnd, bool enable) {
         ULONG ul;
     };
 
-    const HINSTANCE user32 = LoadLibrary(xin("user32.dll"));
+    const HINSTANCE user32 = LoadLibrary("user32.dll");
     if (user32) {
         typedef BOOL(WINAPI* pSetWindowCompositionAttribute)(HWND, WINCOMPATTRDATA*);
 
@@ -90,12 +90,6 @@ void GUI::applyBlur(HWND hwnd, bool enable) {
         }
         FreeLibrary(user32);
     }
-}
-
-void childLabel(const char* text) {
-    ImGui::BeginChild(std::string(text).append(xin(" Label")).c_str(), { childWidth , 20.f }, false, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoShadows);
-    ImGui::SeparatorText(text);
-    ImGui::EndChild();
 }
 
 constexpr const char* weirdTitles[] = {
@@ -173,18 +167,18 @@ void GUI::create() noexcept {
     azurre2Class.cbClsExtra = 0;
     azurre2Class.cbWndExtra = 0;
     azurre2Class.hInstance = 0;
-    azurre2Class.hIcon = LoadIcon(NULL, IDI_APPLICATION);
-    azurre2Class.hCursor = LoadCursor(NULL, IDC_CROSS);
+    azurre2Class.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_RED));
+    azurre2Class.hIconSm = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_RED));
+    azurre2Class.hCursor = LoadCursor(hInstance, IDC_CROSS);
     azurre2Class.hbrBackground = 0;
     azurre2Class.lpszMenuName = 0;
     azurre2Class.lpszClassName = "azurre";
-    azurre2Class.hIconSm = LoadIcon(NULL, IDI_APPLICATION);
 
     RegisterClassEx(&azurre2Class);
-
+    srand((uint32_t)time(0));
     azurre2 = CreateWindowEx(
         0,
-        xin("azurre"),
+        "azurre",
         weirdTitles[rand() % IM_ARRAYSIZE(weirdTitles)],
         WS_POPUP | WS_VISIBLE,
         0,
@@ -312,17 +306,29 @@ void GUI::render() noexcept {
             ImGui::SetNextWindowPos({ 0, 0 });
             ImGui::SetNextWindowSize(screenSize);
             ImGui::Begin("Azurre - CS2 Server Blocker", &isRunning, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoShadows);
+            ImGui::BeginDisabled(busy != BUSYMODE::NOT);
             if (ImGui::Button("Sort alphabetically"))
                 Core::sortAlfa(relays);
             ImGui::SameLine();
+
             if (ImGui::Button("Sort by Country"))
                 Core::sortCity(relays);
+            ImGui::SameLine();
+            if (ImGui::Button("Block All"))
+                std::thread(Core::blockUnBlockRelays, true).detach();
+            ImGui::SameLine();
+
+            if (ImGui::Button("Unblock All"))
+                std::thread(Core::blockUnBlockRelays, false).detach();
+            ImGui::SameLine();
+
             ImGui::SameLine();
             ImGui::SetCursorPosX(screenSize.x - 66.f);
             if (ImGui::Button("Refresh"))
                 Core::init();
             ImGui::SeparatorText("Servers");
             ImGui::BeginChild("##servers", { -1, -12 }, false, 0);
+            int blockedAmount = 0;
             if (relays.empty()) 
                 ImGui::Text("No Server found :(!");
             else {
@@ -332,16 +338,21 @@ void GUI::render() noexcept {
                     if (ImGui::Button(relay.name.c_str(), { -1, 32 }))
                         relay.blocked = relay.blocked ? Firewall::unblockRelay(relay) : !Firewall::blockRelay(relay);
 
+                    if (relay.blocked)
+                        blockedAmount++;
+
                     ImGui::PopStyleColor();
                     ImGui::PopID();
                 }
             }
             ImGui::EndChild();
+            ImGui::EndDisabled();
             ImGui::Text("Found %d servers.", relays.size());
             ImGui::SameLine();
             ImGui::SetCursorPosX(screenSize.x - 59.f);
             ImGui::Text("v%s", Core::getVersion().c_str());
             ImGui::End();
+            Core::taskbarAnimation((int)relays.size(), blockedAmount);
         }
         // Rendering
         ImGui::Render();

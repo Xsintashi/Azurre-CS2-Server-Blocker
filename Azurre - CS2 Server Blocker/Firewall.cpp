@@ -4,6 +4,7 @@
 #include <comdef.h>
 #include <netfw.h>
 #include <iostream>
+#include "Core.h"
 
 // Messy code, to refractor!
 
@@ -24,6 +25,8 @@ std::string BSTR2STR(BSTR bstr) {
 }
 
 bool Firewall::unblockRelay(Relay& relay) {
+    if (busy != BUSYMODE::MAJOR)
+        busy = BUSYMODE::MINOR;
     HRESULT hr;
     INetFwPolicy2* pNetFwPolicy2 = nullptr;
     INetFwRules* pFwRules = nullptr;
@@ -33,6 +36,8 @@ bool Firewall::unblockRelay(Relay& relay) {
     hr = CoInitializeEx(0, COINIT_APARTMENTTHREADED);
     if (FAILED(hr)) {
         std::cerr << "Failed to initialize COM: " << std::hex << hr << std::endl;
+        if (busy != BUSYMODE::MAJOR)
+            busy = BUSYMODE::NOT;
         return true;
     }
 
@@ -41,6 +46,8 @@ bool Firewall::unblockRelay(Relay& relay) {
     if (FAILED(hr)) {
         std::cerr << "Failed to create INetFwPolicy2 instance: " << std::hex << hr << std::endl;
         CoUninitialize();
+        if (busy != BUSYMODE::MAJOR)
+            busy = BUSYMODE::NOT;
         return true;
     }
 
@@ -50,6 +57,8 @@ bool Firewall::unblockRelay(Relay& relay) {
         std::cerr << "Failed to get firewall rules: " << std::hex << hr << std::endl;
         pNetFwPolicy2->Release();
         CoUninitialize();
+        if (busy != BUSYMODE::MAJOR)
+            busy = BUSYMODE::NOT;
         return true;
     }
 
@@ -66,6 +75,8 @@ bool Firewall::unblockRelay(Relay& relay) {
         pFwRules->Release();
         pNetFwPolicy2->Release();
         CoUninitialize();
+        if (busy != BUSYMODE::MAJOR)
+            busy = BUSYMODE::NOT;
         return true;
     }
 
@@ -95,6 +106,8 @@ bool Firewall::unblockRelay(Relay& relay) {
                     pFwRules->Release();
                     pNetFwPolicy2->Release();
                     CoUninitialize();
+                    if (busy != BUSYMODE::MAJOR)
+                        busy = BUSYMODE::NOT;
                     return false;
                 }
 
@@ -109,10 +122,14 @@ bool Firewall::unblockRelay(Relay& relay) {
     pFwRules->Release();
     pNetFwPolicy2->Release();
     CoUninitialize();
+    if (busy != BUSYMODE::MAJOR)
+        busy = BUSYMODE::NOT;
     return true;
 }
 
 bool Firewall::blockRelay(Relay& relay) {
+    if (busy != BUSYMODE::MAJOR)
+        busy = BUSYMODE::MINOR;
     HRESULT hr;
     INetFwPolicy2* pNetFwPolicy2 = nullptr;
     INetFwRules* pFwRules = nullptr;
@@ -122,6 +139,8 @@ bool Firewall::blockRelay(Relay& relay) {
     hr = CoInitializeEx(0, COINIT_APARTMENTTHREADED);
     if (FAILED(hr)) {
         std::cerr << "Failed to initialize COM: " << std::hex << hr << std::endl;
+        if (busy != BUSYMODE::MAJOR)
+            busy = BUSYMODE::NOT;
         return true;
     }
 
@@ -130,6 +149,8 @@ bool Firewall::blockRelay(Relay& relay) {
     if (FAILED(hr)) {
         std::cerr << "Failed to create INetFwPolicy2 instance: " << std::hex << hr << std::endl;
         CoUninitialize();
+        if (busy != BUSYMODE::MAJOR)
+            busy = BUSYMODE::NOT;
         return true;
     }
 
@@ -139,6 +160,8 @@ bool Firewall::blockRelay(Relay& relay) {
         std::cerr << "Failed to get firewall rules: " << std::hex << hr << std::endl;
         pNetFwPolicy2->Release();
         CoUninitialize();
+        if (busy != BUSYMODE::MAJOR)
+            busy = BUSYMODE::NOT;
         return true;
     }
 
@@ -149,6 +172,8 @@ bool Firewall::blockRelay(Relay& relay) {
         pFwRules->Release();
         pNetFwPolicy2->Release();
         CoUninitialize();
+        if (busy != BUSYMODE::MAJOR)
+            busy = BUSYMODE::NOT;
         return true;
     }
 
@@ -182,8 +207,12 @@ bool Firewall::blockRelay(Relay& relay) {
         pFwRules->Release();
         pNetFwPolicy2->Release();
         CoUninitialize();
+        if (busy != BUSYMODE::MAJOR)
+            busy = BUSYMODE::NOT;
         return true;
     }
+    if (busy != BUSYMODE::MAJOR)
+        busy = BUSYMODE::NOT;
     return false;
 }
 

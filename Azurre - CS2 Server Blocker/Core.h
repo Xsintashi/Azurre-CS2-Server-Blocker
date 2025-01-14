@@ -7,7 +7,6 @@
 #include <fstream>
 
 #include "Relay.h"
-#include "xor.h"
 #include "Lib/imgui/imgui.h"
 
 #define THREAD_LOOP					isRunning
@@ -28,9 +27,13 @@
 
 namespace Core {
     void init() noexcept;
+    void taskbarAnimation(int relays, int blocked) noexcept;
+    void blockUnBlockRelays(bool block);
     void sortAlfa(std::vector<Relay>& relays);
     void sortCity(std::vector<Relay>& relays);
     bool updateSDRConfig() noexcept;
+
+    void refresh() noexcept;
 
     constexpr std::string getVersion() noexcept {
         const std::string date = __DATE__;
@@ -42,10 +45,18 @@ namespace Core {
     }
 };
 
+enum class BUSYMODE : int {
+    NOT = 0,
+    MINOR,
+    MAJOR
+};
+
+inline BUSYMODE busy = BUSYMODE::NOT;
 inline std::vector<Relay> relays;
 inline int buildVersion = 0;
 inline bool isRunning = false;
 inline HWND azurre2 = nullptr;
 inline WNDCLASSEX azurre2Class{};
+inline HINSTANCE hInstance;
 inline ImVec2 screenSize = { 640.f, 480.f };
 constexpr const char* url = "https://api.steampowered.com/ISteamApps/GetSDRConfig/v1/?appid=730";

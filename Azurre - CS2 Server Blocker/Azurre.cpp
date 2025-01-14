@@ -9,6 +9,7 @@ int WINAPI wWinMain(HINSTANCE instance, HINSTANCE previousInstance, PWSTR argume
 	if (initMutex())
 		return 0;
 #endif
+	hInstance = instance;
 	Core::init();
 	GUI::init();
 	return 0;
