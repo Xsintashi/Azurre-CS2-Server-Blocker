@@ -81,6 +81,7 @@
     <IntDir>$(SolutionDir)Intermediate\$(Platform)\$(Configuration)\</IntDir>
     <IncludePath>$(IncludePath)</IncludePath>
     <ExecutablePath>$(ExecutablePath)</ExecutablePath>
+    <TargetName>azurreCS2Blocker</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
