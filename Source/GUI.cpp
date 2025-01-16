@@ -288,7 +288,10 @@ void GUI::render() noexcept {
             }
 
         }
-
+        if (GetActiveWindow() != azurre2) {
+            THREAD_SLEEP(1);
+            continue;
+        }
         // Handle window resize (we don't resize directly in the WM_SIZE handler)
         if (g_ResizeWidth != 0 && g_ResizeHeight != 0)
         {
@@ -370,7 +373,6 @@ void GUI::render() noexcept {
 
         g_pSwapChain->Present(1, 0); // Present with vsync
         //g_pSwapChain->Present(0, 0); // Present without vsync
-        THREAD_SLEEP(GetActiveWindow() == azurre2 ? 1 : 250);
     }
 }
 
