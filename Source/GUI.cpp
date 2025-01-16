@@ -356,14 +356,15 @@ void GUI::render() noexcept {
                     ImGui::PopID();
                 }
             }
+            const int& sizeRelays = static_cast<int>(relays.size());
             ImGui::EndChild();
             ImGui::EndDisabled();
-            ImGui::Text("Found %d servers.", relays.size());
+            ImGui::Text("Found %d servers | %d / %d blocked", sizeRelays, blockedAmount, sizeRelays);
             ImGui::SameLine();
             ImGui::SetCursorPosX(screenSize.x - 59.f);
             ImGui::Text("v%s", Core::getVersion().c_str());
             ImGui::End();
-            Core::taskbarAnimation((int)relays.size(), blockedAmount);
+            Core::taskbarAnimation(sizeRelays, blockedAmount);
         }
         // Rendering
         ImGui::Render();
