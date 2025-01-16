@@ -252,44 +252,44 @@ void GUI::render() noexcept {
             ::TranslateMessage(&msg);
             ::DispatchMessage(&msg);
             switch (msg.message) {
-            case WM_QUIT: {
-                isRunning = false;
-                return;
-            }
-            case WM_LBUTTONDOWN: {
-                pos = MAKEPOINTS(msg.lParam); // set click points
-                break;
-            }
-            case WM_MOUSEMOVE: {
-                if (msg.wParam == MK_LBUTTON)
-                {
-                    const auto points = MAKEPOINTS(msg.lParam);
-                    auto rect = ::RECT{ };
-
-                    GetWindowRect(azurre2, &rect);
-
-                    rect.left += points.x - pos.x;
-                    rect.top += points.y - pos.y;
-
-                    if (pos.x >= 0 &&
-                        pos.x <= screenSize.x &&
-                        pos.y >= 0 && pos.y <= 19)
-                        SetWindowPos(
-                            azurre2,
-                            HWND_TOPMOST,
-                            rect.left,
-                            rect.top,
-                            0, 0,
-                            SWP_SHOWWINDOW | SWP_NOSIZE | SWP_NOZORDER
-                        );
+                case WM_QUIT: {
+                    isRunning = false;
+                    return;
                 }
-                break;
-            }
+                case WM_LBUTTONDOWN: {
+                    pos = MAKEPOINTS(msg.lParam); // set click points
+                    break;
+                }
+                case WM_MOUSEMOVE: {
+                    if (msg.wParam == MK_LBUTTON)
+                    {
+                        const auto points = MAKEPOINTS(msg.lParam);
+                        auto rect = ::RECT{ };
+
+                        GetWindowRect(azurre2, &rect);
+
+                        rect.left += points.x - pos.x;
+                        rect.top += points.y - pos.y;
+
+                        if (pos.x >= 0 &&
+                            pos.x <= screenSize.x &&
+                            pos.y >= 0 && pos.y <= 19)
+                            SetWindowPos(
+                                azurre2,
+                                HWND_TOPMOST,
+                                rect.left,
+                                rect.top,
+                                0, 0,
+                                SWP_SHOWWINDOW | SWP_NOSIZE | SWP_NOZORDER
+                            );
+                    }
+                    break;
+                }
             }
 
         }
         if (GetActiveWindow() != azurre2) {
-            THREAD_SLEEP(1);
+            THREAD_SLEEP(50);
             continue;
         }
         // Handle window resize (we don't resize directly in the WM_SIZE handler)
