@@ -331,7 +331,7 @@ void GUI::render() noexcept {
             if (ImGui::Button("Refresh"))
                 Core::init();
             static std::string search;
-            ImGui::InputTextWithHint("##search", "Search Server",&search, ImGuiInputTextFlags_CharsLowercase);
+            ImGui::InputTextWithHint("##search", "Search Server",&search);
             std::transform(search.begin(), search.end(), search.begin(), [](unsigned char c) { return std::tolower(c); });
             ImGui::SeparatorText("Servers");
             ImGui::BeginChild("##servers", { -1, -12 }, false, 0);
