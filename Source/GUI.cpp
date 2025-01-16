@@ -12,6 +12,7 @@
 #include <iostream>
 #include <ShlObj.h>
 #include <string>
+#include <algorithm>
 
 #include "GUI.h"
 #include "Core.h"
@@ -329,6 +330,9 @@ void GUI::render() noexcept {
             ImGui::SetCursorPosX(screenSize.x - 66.f);
             if (ImGui::Button("Refresh"))
                 Core::init();
+            static std::string search;
+            ImGui::InputTextWithHint("##search", "Search Server",&search, ImGuiInputTextFlags_CharsLowercase);
+            std::transform(search.begin(), search.end(), search.begin(), [](unsigned char c) { return std::tolower(c); });
             ImGui::SeparatorText("Servers");
             ImGui::BeginChild("##servers", { -1, -12 }, false, 0);
             int blockedAmount = 0;
@@ -336,6 +340,10 @@ void GUI::render() noexcept {
                 ImGui::Text("No Server found :(!");
             else {
                 for (auto& relay : relays) {
+                    std::string relayName = relay.name;
+                    std::transform(relayName.begin(), relayName.end(), relayName.begin(), [](unsigned char c) { return std::tolower(c); });
+                    if (!search.empty() && relayName.find(search) == std::string::npos)
+                        continue;
                     ImGui::PushID(relay.code.c_str());
                     ImGui::PushStyleColor(ImGuiCol_Text, relay.blocked ? ImVec4{1.f, 0.f, 0.f, 1.f} : ImVec4{ 0.f, 1.f, 0.f, 1.f });
                     if (ImGui::Button(relay.name.c_str(), { -1, 32 }))
