@@ -340,6 +340,8 @@ void GUI::render() noexcept {
                 ImGui::Text("No Server found :(!");
             else {
                 for (auto& relay : relays) {
+                    if (relay.blocked)
+                        blockedAmount++;
                     std::string relayName = relay.name;
                     std::transform(relayName.begin(), relayName.end(), relayName.begin(), [](unsigned char c) { return std::tolower(c); });
                     if (!search.empty() && relayName.find(search) == std::string::npos)
@@ -348,9 +350,6 @@ void GUI::render() noexcept {
                     ImGui::PushStyleColor(ImGuiCol_Text, relay.blocked ? ImVec4{1.f, 0.f, 0.f, 1.f} : ImVec4{ 0.f, 1.f, 0.f, 1.f });
                     if (ImGui::Button(relay.name.c_str(), { -1, 32 }))
                         relay.blocked = relay.blocked ? Firewall::unblockRelay(relay) : !Firewall::blockRelay(relay);
-
-                    if (relay.blocked)
-                        blockedAmount++;
 
                     ImGui::PopStyleColor();
                     ImGui::PopID();
