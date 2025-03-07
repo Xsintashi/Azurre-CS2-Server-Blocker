@@ -194,8 +194,6 @@
     <Image Include="Source\azurre.ico" />
     <Image Include="Source\green.ico" />
     <Image Include="Source\icon.ico" />
-    <Image Include="Source\icon1.ico" />
-    <Image Include="Source\icon2.ico" />
     <Image Include="Source\red.ico" />
     <Image Include="Source\yellow.ico" />
   </ItemGroup>
